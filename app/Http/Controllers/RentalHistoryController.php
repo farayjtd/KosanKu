@@ -12,11 +12,17 @@ class RentalHistoryController extends Controller
     public function tenantHistory()
     {
         $tenant = Auth::user()->tenant;
-        $histories = RentalHistory::with(['room', 'payment'])
-            ->where('tenant_id', $tenant->id)
-            ->orderByDesc('start_date')
-            ->get();
 
+        // Ambil histori dengan relasi room, landboard, dan payment
+        $histories = RentalHistory::with([
+            'room.landboard',  // ← ini penting agar bisa akses nama_kos
+            'payment'
+        ])
+        ->where('tenant_id', $tenant->id)
+        ->orderByDesc('start_date')
+        ->get();
+
+        // Cari sewa aktif
         $activeRental = $histories->first(function ($history) {
             $start = Carbon::parse($history->start_date);
             $end = $history->end_date 
@@ -28,7 +34,7 @@ class RentalHistoryController extends Controller
 
         $showDecisionForm = false;
 
-        if ($activeRental) {
+        if ($activeRental && $activeRental->room && $activeRental->room->landboard) {
             $start = Carbon::parse($activeRental->start_date);
             $end = $activeRental->end_date 
                 ? Carbon::parse($activeRental->end_date) 
@@ -36,9 +42,11 @@ class RentalHistoryController extends Controller
 
             $paymentStatus = $activeRental->payment?->status;
 
+            // Ambil jumlah hari dari Landboard untuk memunculkan form keputusan
             $landboard = $activeRental->room->landboard;
-            $daysBefore = $landboard->decision_days_before_end ?? 5; 
+            $daysBefore = $landboard->decision_days_before_end ?? 5;
 
+            // Tampilkan form jika tinggal 'x hari lagi' dan sudah dibayar
             $showDecisionForm = now()->diffInDays($end, false) <= $daysBefore && $paymentStatus === 'paid';
         }
 
@@ -48,6 +56,7 @@ class RentalHistoryController extends Controller
             'showDecisionForm' => $showDecisionForm,
         ]);
     }
+
 
     public function landboardHistory()
     {

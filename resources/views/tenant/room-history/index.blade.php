@@ -156,14 +156,12 @@
         <div class="card">
             <h2>Riwayat Sewa Kamar</h2>
 
-            {{-- Flash message --}}
             @if (session('success'))
                 <div class="alert alert-success">{{ session('success') }}</div>
             @elseif (session('error'))
                 <div class="alert alert-danger">{{ session('error') }}</div>
             @endif
 
-            {{-- Decision Box --}}
             @if(isset($showDecisionForm) && $showDecisionForm && $activeRental)
                 @php
                     $endDate = $activeRental->end_date
@@ -197,7 +195,6 @@
                 </div>
             @endif
 
-            {{-- Tombol keluar --}}
             @if($activeRental)
                 <form method="POST" action="{{ route('tenant.leave-room') }}" style="margin-bottom: 20px;">
                     @csrf
@@ -208,13 +205,13 @@
                 </form>
             @endif
 
-            {{-- Tabel Histori --}}
             @if ($histories->isEmpty())
                 <p class="empty">Belum ada riwayat sewa.</p>
             @else
                 <table>
                     <thead>
                         <tr>
+                            <th>Nama Kos</th>
                             <th>Nomor Kamar</th>
                             <th>Tipe</th>
                             <th>Harga</th>
@@ -249,6 +246,7 @@
                                 $paymentClass = $history->payment?->status === 'paid' ? 'status-ongoing' : 'status-finished';
                             @endphp
                             <tr>
+                                <td>{{ $history->room->landboard->kost_name ?? '-' }}</td>
                                 <td>{{ $history->room->room_number ?? '-' }}</td>
                                 <td>{{ $history->room->type ?? '-' }}</td>
                                 <td>Rp{{ number_format($history->room->price ?? 0, 0, ',', '.') }}</td>
@@ -263,7 +261,6 @@
                 </table>
             @endif
 
-            {{-- Tagihan baru --}}
             @if(session('show_invoice') && session('rental_id'))
                 @php
                     $rental = \App\Models\RentalHistory::with('room')->find(session('rental_id'));
