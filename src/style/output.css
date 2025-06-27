@@ -1057,6 +1057,9 @@
   .max-w-sm {
     max-width: var(--container-sm);
   }
+  .max-w-xl {
+    max-width: var(--container-xl);
+  }
   .min-w-\[100px\] {
     min-width: 100px;
   }
@@ -1329,6 +1332,9 @@
   .border-\[\#e3e3e0\] {
     border-color: #e3e3e0;
   }
+  .border-\[yellow-300\] {
+    border-color: yellow-300;
+  }
   .border-black {
     border-color: var(--color-black);
   }
@@ -1352,6 +1358,9 @@
   }
   .border-white {
     border-color: var(--color-white);
+  }
+  .border-yellow-300 {
+    border-color: var(--color-yellow-300);
   }
   .bg-\[\#\#31c594\] {
     background-color: ##31c594;
@@ -1448,6 +1457,9 @@
   }
   .bg-\[url\] {
     background-color: url;
+  }
+  .bg-\[yellow-100\] {
+    background-color: yellow-100;
   }
   .bg-amber-200 {
     background-color: var(--color-amber-200);
@@ -1859,6 +1871,9 @@
   .text-\[\#5b4636\] {
     color: #5b4636;
   }
+  .text-\[\#5c4613\] {
+    color: #5c4613;
+  }
   .text-\[\#5e503f\] {
     color: #5e503f;
   }
@@ -1873,6 +1888,9 @@
   }
   .text-\[\#706f6c\] {
     color: #706f6c;
+  }
+  .text-\[\#443422\] {
+    color: #443422;
   }
   .text-\[\#F53003\] {
     color: #F53003;
@@ -2384,6 +2402,11 @@
       }
     }
   }
+  .focus\:border-blue-500 {
+    &:focus {
+      border-color: var(--color-blue-500);
+    }
+  }
   .focus\:border-transparent {
     &:focus {
       border-color: transparent;
@@ -2446,6 +2469,12 @@
   .sm\:grid-cols-2 {
     @media (width >= 40rem) {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .sm\:text-sm {
+    @media (width >= 40rem) {
+      font-size: var(--text-sm);
+      line-height: var(--tw-leading, var(--text-sm--line-height));
     }
   }
   .md\:mt-0 {
