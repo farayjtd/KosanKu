@@ -20,7 +20,6 @@
     <div class="bg-white p-6 rounded-xl border border-[#dcd3cc] shadow-md">
       <h3 class="text-xl font-semibold text-[#5a4430] mb-4">Pengaturan Denda</h3>
 
-      <!-- Denda Keterlambatan -->
       <p class="mb-4 text-sm text-[#6b5e53]">
         💸 <span class="font-bold text-[#4b3a2d]">Keterlambatan:</span><br />
         @if(Auth::user()->landboard->is_penalty_enabled)
@@ -31,7 +30,6 @@
         @endif
       </p>
 
-      <!-- Denda Pindah Kamar -->
       <p class="mb-4 text-sm text-[#6b5e53]">
         🏠 <span class="font-bold text-[#4b3a2d]">Pindah Kamar:</span><br />
         @if(Auth::user()->landboard->is_penalty_on_room_change)
@@ -41,7 +39,6 @@
         @endif
       </p>
 
-      <!-- Denda Keluar Tengah Jalan -->
       <p class="text-sm text-[#6b5e53]">
         🚪 <span class="font-bold text-[#4b3a2d]">Keluar Tengah Jalan:</span><br />
         @if(Auth::user()->landboard->is_penalty_on_moveout)

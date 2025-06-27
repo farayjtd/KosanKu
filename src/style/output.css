@@ -561,6 +561,9 @@
   .right-0 {
     right: calc(var(--spacing) * 0);
   }
+  .right-1 {
+    right: calc(var(--spacing) * 1);
+  }
   .right-2 {
     right: calc(var(--spacing) * 2);
   }
@@ -707,6 +710,9 @@
   }
   .mt-104 {
     margin-top: calc(var(--spacing) * 104);
+  }
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
   }
   .mr-2 {
     margin-right: calc(var(--spacing) * 2);
@@ -856,6 +862,9 @@
   .h-32 {
     height: calc(var(--spacing) * 32);
   }
+  .h-34 {
+    height: calc(var(--spacing) * 34);
+  }
   .h-36 {
     height: calc(var(--spacing) * 36);
   }
@@ -894,6 +903,9 @@
   }
   .max-h-9\/12 {
     max-height: calc(9/12 * 100%);
+  }
+  .max-h-32 {
+    max-height: calc(var(--spacing) * 32);
   }
   .max-h-60 {
     max-height: calc(var(--spacing) * 60);
@@ -1960,6 +1972,9 @@
   }
   .opacity-10 {
     opacity: 10%;
+  }
+  .opacity-30 {
+    opacity: 30%;
   }
   .opacity-80 {
     opacity: 80%;

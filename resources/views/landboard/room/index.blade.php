@@ -60,13 +60,13 @@
                         <div class="absolute top-2 right-2">
                             <button class="text-xl kebab-toggle" data-room="{{ $room->id }}">⋮</button>
                             <div class="dropdown absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10 p-1 kebab-menu" data-room="{{ $room->id }}">
-                                <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100">Duplikat</a>
-                                <a href="{{ route('landboard.rooms.show', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100">Detail</a>
-                                <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100">Edit</a>
+                                <a href="{{ route('landboard.rooms.show', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-info-circle mr-2"></i>Detail</a>
+                                <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-copy mr-2"></i>Duplikat</a>
+                                <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-house-gear mr-2"></i>Edit</a>
                                 <form action="{{ route('landboard.rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kamar ini?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="block w-full text-left px-2 py-1 text-sm hover:bg-red-100 text-red-600">Hapus</button>
+                                    <button type="submit" class="block w-full text-left px-2 py-1 text-sm hover:bg-red-100 text-red-600"><i class="bi bi-trash mr-2"></i>Hapus</button>
                                 </form>
                             </div>
                         </div>
