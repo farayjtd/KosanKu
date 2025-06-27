@@ -2,112 +2,109 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Detail Kamar</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Kamar</title>
     <style>
-        body {
-            font-family: sans-serif;
-            margin: 0;
-            display: flex;
-            background: #f0f2f5;
+        .fade {
+            opacity: 0;
+            transition: opacity 0.7s ease-in-out;
         }
-        .sidebar {
-            width: 220px;
-            background: #eee;
-            padding: 20px;
-            height: 100vh;
-        }
-        .main-content {
-            flex: 1;
-            padding: 30px;
-            background: #f9f9f9;
-        }
-        h2 {
-            margin-bottom: 20px;
-            color: #2d3748;
-        }
-        h3 {
-            margin-top: 24px;
-            margin-bottom: 10px;
-            color: #374151;
-        }
-        .section {
-            background: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-        }
-        .section p,
-        .section li {
-            font-size: 14px;
-            color: #374151;
-        }
-        .section strong {
-            color: #111827;
-        }
-        img {
-            width: 200px;
-            border-radius: 8px;
-            margin-right: 10px;
-            margin-top: 10px;
-            border: 1px solid #ccc;
-        }
-        ul {
-            padding-left: 20px;
-            margin: 0;
+        .fade.active {
+            opacity: 1;
         }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
     @include('components.sidebar-landboard')
 
-    <div class="main-content">
-        <h2>Detail Kamar: {{ $room->room_number }}</h2>
+    <div class="flex-1 p-6">
+        <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
+            <!-- Image Slider -->
+            <div class="w-full h-56 bg-gray-200 relative overflow-hidden">
+                @if($room->photos->isNotEmpty())
+                    <div id="slider" class="relative w-full h-full">
+                        @foreach ($room->photos as $index => $photo)
+                            <img src="{{ asset('storage/' . $photo->path) }}" alt="Foto" class="absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out fade {{ $index === 0 ? 'active' : '' }}">
+                        @endforeach
+                    </div>
+                @else
+                    <div class="flex items-center justify-center h-full text-gray-600">Tidak ada foto tersedia.</div>
+                @endif
+            </div>
 
-        <div class="section">
-            <p><strong>Tipe:</strong> {{ $room->type }}</p>
-            <p><strong>Harga:</strong> Rp{{ number_format($room->price, 0, ',', '.') }}</p>
-            <p><strong>Gender:</strong> {{ ucfirst($room->gender_type) }}</p>
-            <p><strong>Status:</strong> {{ ucfirst($room->status) }}</p>
-        </div>
+            <!-- Room Details -->
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-4">Detail Kamar: {{ $room->room_number }}</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
+                    <p><strong class="text-gray-900">Tipe:</strong> {{ $room->type }}</p>
+                    <p><strong class="text-gray-900">Harga:</strong> Rp{{ number_format($room->price, 0, ',', '.') }}</p>
+                    <p><strong class="text-gray-900">Gender:</strong> {{ ucfirst($room->gender_type) }}</p>
+                    <p><strong class="text-gray-900">Status:</strong> {{ ucfirst($room->status) }}</p>
+                </div>
 
-        <div class="section">
-            <h3>Foto Kamar</h3>
-            @forelse ($room->photos as $photo)
-                <img src="{{ asset('storage/' . $photo->path) }}" alt="Foto">
-            @empty
-                <p>Tidak ada foto tersedia.</p>
-            @endforelse
-        </div>
+                <!-- Fasilitas dan Aturan Side by Side -->
+                <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Fasilitas -->
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-800 mb-2">Fasilitas</h3>
+                        @if($room->facilities->isEmpty())
+                            <p class="text-sm text-gray-600">Tidak ada fasilitas ditambahkan.</p>
+                        @else
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                @foreach ($room->facilities as $facility)
+                                    <li>{{ $facility->name }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
 
-        <div class="section">
-            <h3>Fasilitas</h3>
-            @if($room->facilities->isEmpty())
-                <p>Tidak ada fasilitas ditambahkan.</p>
-            @else
-                <ul>
-                    @foreach ($room->facilities as $facility)
-                        <li>{{ $facility->name }}</li>
-                    @endforeach
-                </ul>
-            @endif
-        </div>
+                    <!-- Aturan -->
+                    <div>
+                        <h3 class="text-base font-semibold text-gray-800 mb-2">Aturan</h3>
+                        @if($room->rules->isEmpty())
+                            <p class="text-sm text-gray-600">Tidak ada aturan ditentukan.</p>
+                        @else
+                            <ul class="list-disc list-inside text-sm text-gray-700">
+                                @foreach ($room->rules as $rule)
+                                    <li>{{ $rule->name }}</li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                </div>
 
-        <div class="section">
-            <h3>Aturan</h3>
-            @if($room->rules->isEmpty())
-                <p>Tidak ada aturan ditentukan.</p>
-            @else
-                <ul>
-                    @foreach ($room->rules as $rule)
-                        <li>{{ $rule->name }}</li>
-                    @endforeach
-                </ul>
-            @endif
+                <!-- Foto-foto Tambahan -->
+                <div class="mt-8">
+                    <h3 class="text-base font-semibold text-gray-800 mb-2">Semua Foto</h3>
+                    @if($room->photos->isNotEmpty())
+                        <div class="flex flex-wrap gap-3">
+                            @foreach ($room->photos as $photo)
+                                <img src="{{ asset('storage/' . $photo->path) }}" alt="Foto Tambahan" class="w-28 h-20 object-cover rounded-lg border">
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-600">Tidak ada foto tersedia.</p>
+                    @endif
+                </div>
+
+            </div>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const images = document.querySelectorAll('#slider img');
+            let current = 0;
+            if (images.length > 0) {
+                setInterval(() => {
+                    images[current].classList.remove('active');
+                    current = (current + 1) % images.length;
+                    images[current].classList.add('active');
+                }, 5000);
+            }
+        });
+    </script>
 </body>
 </html>
