@@ -63,11 +63,11 @@
                                 <a href="{{ route('landboard.rooms.show', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-info-circle mr-2"></i>Detail</a>
                                 <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-copy mr-2"></i>Duplikat</a>
                                 <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-house-gear mr-2"></i>Edit</a>
-                                <form action="{{ route('landboard.rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kamar ini?')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="block w-full text-left px-2 py-1 text-sm hover:bg-red-100 text-red-600"><i class="bi bi-trash mr-2"></i>Hapus</button>
-                                </form>
+                                <button type="button"
+                                    onclick="showDeleteModal('{{ $room->id }}')"
+                                    class="block w-full text-left px-2 py-1 text-sm hover:bg-red-100 text-red-600">
+                                    <i class="bi bi-trash mr-2"></i>Hapus
+                                </button>
                             </div>
                         </div>
                         <div class="relative w-full h-36 overflow-hidden rounded-md mb-3 photo-carousel" data-room-id="{{ $room->id }}">
@@ -95,9 +95,9 @@
                         @endphp
 
                         @if ($token)
-                            <div class="text-xs mt-2 text-yellow-600 animate-pulse">
-                                Token: <strong>{{ $token->token }}</strong><br>
-                                Expire: <span id="timer-{{ $room->id }}" data-expires="{{ $token->expires_at->toIso8601String() }}"></span>
+                            <div class="text-xs mt-2 text-black">
+                                Token: <strong class="animate-pulse text-yellow-500">{{ $token->token }}</strong><br>
+                                Expire in: <span class="text-red-500" id="timer-{{ $room->id }}" data-expires="{{ $token->expires_at->toIso8601String() }}"></span>
                             </div>
                             <form action="{{ route('tokens.use', $room->id) }}" method="POST" class="mt-2">
                                 @csrf
@@ -124,6 +124,22 @@
                 <button onclick="toggleRooms()" id="toggle-btn" class="text-sm text-[#31c594] hover:underline">Tampilkan Semua</button>
             </div>
         </div>
+    </div>
+</div>
+<div id="deleteModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-xl w-96 p-6">
+        <h2 class="text-lg font-bold mb-4 text-gray-800">Hapus Kamar</h2>
+        <p class="text-sm text-gray-700 mb-4">Apakah anda yakin ingin menghapus kamar ini<br>secara permanent?</p>
+        <form id="fullDeleteForm" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded mb-2">
+                Ya, saya yakin
+            </button>
+        </form>
+        <button onclick="closeModal()" class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded">
+            Batal
+        </button>
     </div>
 </div>
 
@@ -189,6 +205,21 @@
             }, 1000);
         });
     });
+    function showDeleteModal(roomId) {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+
+        const fullDeleteForm = document.getElementById('fullDeleteForm');
+        const archiveForm = document.getElementById('archiveForm');
+
+        // Update action URL sesuai rute Laravel
+        fullDeleteForm.action = `/landboard/rooms/${roomId}`;
+        archiveForm.action = `/landboard/rooms/${roomId}/archive`;
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
 </script>
 </body>
 </html>

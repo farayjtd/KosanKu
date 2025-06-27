@@ -9,7 +9,6 @@ use App\Http\Controllers\RentalHistoryController;
 use App\Http\Controllers\PenaltyController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\TenantController;
-
 Route::redirect('/', '/login')->name('auth');
 
 // AUTH
@@ -66,3 +65,7 @@ Route::middleware(['auth', 'role:tenant'])->prefix('tenant')->group(function () 
     
     Route::post('/invoice/{rentalId}/pay', [PaymentController::class, 'createInvoice'])->name('tenant.invoice.pay');
 });
+
+
+
+

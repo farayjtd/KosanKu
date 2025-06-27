@@ -21,7 +21,6 @@
 
     <div class="flex-1 p-6">
         <div class="max-w-2xl mx-auto bg-white shadow-lg rounded-xl overflow-hidden">
-            <!-- Image Slider -->
             <div class="w-full h-56 bg-gray-200 relative overflow-hidden">
                 @if($room->photos->isNotEmpty())
                     <div id="slider" class="relative w-full h-full">
@@ -33,8 +32,6 @@
                     <div class="flex items-center justify-center h-full text-gray-600">Tidak ada foto tersedia.</div>
                 @endif
             </div>
-
-            <!-- Room Details -->
             <div class="p-6">
                 <h2 class="text-xl font-bold text-gray-800 mb-4">Detail Kamar: {{ $room->room_number }}</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
@@ -43,10 +40,7 @@
                     <p><strong class="text-gray-900">Gender:</strong> {{ ucfirst($room->gender_type) }}</p>
                     <p><strong class="text-gray-900">Status:</strong> {{ ucfirst($room->status) }}</p>
                 </div>
-
-                <!-- Fasilitas dan Aturan Side by Side -->
                 <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <!-- Fasilitas -->
                     <div>
                         <h3 class="text-base font-semibold text-gray-800 mb-2">Fasilitas</h3>
                         @if($room->facilities->isEmpty())
@@ -59,8 +53,6 @@
                             </ul>
                         @endif
                     </div>
-
-                    <!-- Aturan -->
                     <div>
                         <h3 class="text-base font-semibold text-gray-800 mb-2">Aturan</h3>
                         @if($room->rules->isEmpty())
@@ -74,8 +66,6 @@
                         @endif
                     </div>
                 </div>
-
-                <!-- Foto-foto Tambahan -->
                 <div class="mt-8">
                     <h3 class="text-base font-semibold text-gray-800 mb-2">Semua Foto</h3>
                     @if($room->photos->isNotEmpty())
@@ -88,7 +78,6 @@
                         <p class="text-sm text-gray-600">Tidak ada foto tersedia.</p>
                     @endif
                 </div>
-
             </div>
         </div>
     </div>
