@@ -73,14 +73,31 @@ class RoomController extends Controller
         return redirect()->route('landboard.rooms.index')->with('success', 'Kamar berhasil ditambahkan.');
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $rooms = Room::with(['photos', 'facilities', 'rules', 'token']) 
-                    ->where('landboard_id', Auth::user()->landboard->id)
-                    ->get();
+        $landboardId = Auth::user()->landboard->id;
 
-        return view('landboard.room.index', compact('rooms'));
+        $query = Room::with(['photos', 'facilities', 'rules', 'token'])
+                    ->where('landboard_id', $landboardId);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('room_number', 'like', "%{$search}%")
+                ->orWhere('type', 'like', "%{$search}%");
+            });
+        }
+
+        $rooms = $query->get();
+
+        // Data statistik
+        $totalRooms = Room::where('landboard_id', $landboardId)->count();
+        $availableRooms = Room::where('landboard_id', $landboardId)->where('status', 'available')->count();
+        $bookedRooms = Room::where('landboard_id', $landboardId)->where('status', 'booked')->count();
+
+        return view('landboard.room.index', compact('rooms', 'totalRooms', 'availableRooms', 'bookedRooms'));
     }
+
 
     public function show($id)
     {
