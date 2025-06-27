@@ -3,212 +3,101 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Tambah Kamar</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f5f3f0;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        .card {
-            background: #fffaf6;
-            padding: 30px;
-            border-radius: 14px;
-            max-width: 800px;
-            margin: auto;
-            box-shadow: 0 6px 12px rgba(0,0,0,0.05);
-        }
-
-        h2 {
-            text-align: center;
-            color: #5a4430;
-            margin-bottom: 24px;
-        }
-
-        label {
-            font-weight: 600;
-            margin-top: 18px;
-            display: block;
-            color: #6b4e3d;
-        }
-
-        input,
-        select {
-            width: 100%;
-            padding: 12px;
-            margin-top: 6px;
-            border: 1px solid #d6ccc2;
-            border-radius: 8px;
-            font-size: 14px;
-            background: #fdfdfb;
-            box-sizing: border-box;
-        }
-
-        .group {
-            display: flex;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .group input[type="text"],
-        .group input[type="file"] {
-            flex: 1;
-        }
-
-        .remove-btn {
-            background: #c84c43;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        .add-btn {
-            margin-top: 10px;
-            background: #a18064;
-            color: white;
-            border: none;
-            padding: 10px 14px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        .add-btn:hover {
-            background: #80644c;
-        }
-
-        button[type="submit"] {
-            margin-top: 30px;
-            width: 100%;
-            padding: 14px;
-            background: #6e5947;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button[type="submit"]:hover {
-            background: #5a4430;
-        }
-
-        .message {
-            max-width: 800px;
-            margin: 0 auto 20px auto;
-            color: green;
-            font-weight: bold;
-        }
-
-        .error-list {
-            color: red;
-            max-width: 800px;
-            margin: 0 auto 20px auto;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                padding: 20px;
-            }
-
-            .card {
-                padding: 20px;
-                margin: 20px;
-            }
-
-            .group {
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
-<body>
-
+<body class="bg-gray-200 font-sans pb-16">
     @include('components.sidebar-landboard')
 
-    <div class="main-content">
+    <div class="flex-1 p-6">
         @if(session('success'))
-            <p class="message">{{ session('success') }}</p>
+            <p class="max-w-3xl mx-auto text-green-600 font-semibold mb-4">{{ session('success') }}</p>
         @endif
 
         @if($errors->any())
-            <ul class="error-list">
+            <ul class="max-w-3xl mx-auto text-red-600 font-semibold mb-4 list-disc list-inside">
                 @foreach($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
             </ul>
         @endif
 
-        <div class="card">
-            <h2>Tambah Kamar</h2>
+        <div class="bg-white p-8 rounded-xl max-w-5xl mx-auto shadow-md">
+            <h2 class="text-left text-2xl text-black font-semibold">Tambah Kamar</h2>
 
             <form action="{{ route('landboard.rooms.store') }}" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
                 @csrf
 
-                <label>Tipe Kamar</label>
-                <input type="text" name="type" value="{{ old('type') }}" required>
+                <div class="flex flex-col lg:flex-row gap-8">
+                    <div class="flex-1">
+                        <label class="block font-semibold text-black mt-4"><i class="bi bi-building-exclamation mr-2"></i>Tipe Kamar</label>
+                        <input type="text" name="type" value="{{ old('type') }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
 
-                <label>Jumlah Kamar</label>
-                <input type="number" name="room_quantity" min="1" value="{{ old('room_quantity', 1) }}" required>
+                        <label class="block font-semibold text-black mt-4"><i class="bi bi-door-open mr-2"></i>Jumlah Kamar</label>
+                        <input type="number" name="room_quantity" min="1" value="{{ old('room_quantity', 1) }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
 
-                <label>Harga per Bulan</label>
-                <input type="number" name="price" value="{{ old('price') }}" required>
+                        <label class="block font-semibold text-black mt-4"><i class="bi bi-gender-ambiguous mr-2"></i>Jenis Kelamin yang Diizinkan</label>
+                        <select name="gender_type" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                            <option value="mixed" {{ old('gender_type') == 'mixed' ? 'selected' : '' }}>Campuran</option>
+                            <option value="male" {{ old('gender_type') == 'male' ? 'selected' : '' }}>Laki-laki</option>
+                            <option value="female" {{ old('gender_type') == 'female' ? 'selected' : '' }}>Perempuan</option>
+                        </select>
+                        <label class="block font-semibold text-black mt-4"><i class="bi bi-info-circle mr-2"></i>Fasilitas</label>
+                        <div class="grid grid-cols-2 gap-3 mt-2">
+                            @php
+                                $facilitiesList = [
+                                    'WiFi', 'AC', 'Kamar Mandi Dalam', 'Kasur', 'Lemari', 'Meja Belajar',
+                                    'Listrik Token', 'Parkir Motor', 'Parkir Mobil', 'Dapur Umum', 'CCTV'
+                                ];
+                            @endphp
 
-                <label>Jenis Kelamin yang Diizinkan</label>
-                <select name="gender_type" required>
-                    <option value="mixed" {{ old('gender_type') == 'mixed' ? 'selected' : '' }}>Campuran</option>
-                    <option value="male" {{ old('gender_type') == 'male' ? 'selected' : '' }}>Laki-laki</option>
-                    <option value="female" {{ old('gender_type') == 'female' ? 'selected' : '' }}>Perempuan</option>
-                </select>
+                            @foreach ($facilitiesList as $facility)
+                                <label class="inline-flex items-center gap-2">
+                                    <input type="checkbox" name="facilities[]" value="{{ $facility }}"
+                                        {{ is_array(old('facilities')) && in_array($facility, old('facilities')) ? 'checked' : '' }}
+                                        class="accent-[#31c594] w-5 h-5 rounded" />
+                                    <span class="text-sm text-black">{{ $facility }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                    </div>
 
-                <label>Fasilitas</label>
-                <div id="facility-container">
-                    <div class="group">
-                        <input type="text" name="facilities[]" required>
-                        <button type="button" class="remove-btn" onclick="removeField(this)">X</button>
+                    <div class="flex-1">
+                        <label class="block font-semibold text-black mt-4 "><i class="bi bi-tags mr-2"></i>Harga per Bulan</label>
+                        <input type="number" name="price" value="{{ old('price') }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                        
+                        <label class="block font-semibold text-black mt-6"><i class="bi bi-house-exclamation mr-2"></i>Aturan</label>
+                        <div id="rule-container" class="space-y-2">
+                            <div class="flex gap-2">
+                                <input type="text" name="rules[]" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                                <button type="button" class="text-red-500 px-3 py-1 rounded-4xl font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" class="mt-2 bg-[#31c594] text-white px-4 py-2 rounded-md hover:bg-[#1a966d]" onclick="addRule()">+ Tambah Aturan</button>
+
+                        <label class="block font-semibold text-black mt-6"><i class="bi bi-image mr-2"></i>Foto Kamar</label>
+                        <div id="photo-container" class="space-y-2">
+                            <div class="flex gap-2">
+                                <input type="file" name="photos[]" accept="image/*" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md">
+                                <button type="button" class="text-red-500 px-3 py-1 rounded-md font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>
+                            </div>
+                        </div>
+                        <button type="button" class="mt-2 bg-[#31c594] text-white px-4 py-2 rounded-md hover:bg-[#1a966d]" onclick="addPhoto()">+ Tambah Foto</button>
+                        <button type="submit" class="mt-8 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-3 rounded-lg text-lg font-semibold">Simpan</button>
                     </div>
                 </div>
-                <button type="button" class="add-btn" onclick="addFacility()">+ Tambah Fasilitas</button>
-
-                <label>Aturan</label>
-                <div id="rule-container">
-                    <div class="group">
-                        <input type="text" name="rules[]" required>
-                        <button type="button" class="remove-btn" onclick="removeField(this)">X</button>
-                    </div>
-                </div>
-                <button type="button" class="add-btn" onclick="addRule()">+ Tambah Aturan</button>
-
-                <label>Foto Kamar</label>
-                <div id="photo-container">
-                    <div class="group">
-                        <input type="file" name="photos[]" accept="image/*" required>
-                        <button type="button" class="remove-btn" onclick="removeField(this)">X</button>
-                    </div>
-                </div>
-                <button type="button" class="add-btn" onclick="addPhoto()">+ Tambah Foto</button>
-
-                <button type="submit">Simpan</button>
+                
             </form>
         </div>
+
     </div>
 
     <script>
         function removeField(btn) {
-            const container = btn.closest('.group').parentElement;
-            if (container.querySelectorAll('.group').length > 1) {
-                btn.closest('.group').remove();
+            const container = btn.closest('.flex').parentElement;
+            if (container.querySelectorAll('.flex').length > 1) {
+                btn.closest('.flex').remove();
             } else {
                 alert('Minimal 1 input harus ada.');
             }
@@ -217,27 +106,27 @@
         function addFacility() {
             const container = document.getElementById('facility-container');
             const div = document.createElement('div');
-            div.className = 'group';
-            div.innerHTML = `<input type="text" name="facilities[]" required>
-                             <button type="button" class="remove-btn" onclick="removeField(this)">X</button>`;
+            div.className = 'flex gap-2';
+            div.innerHTML = `<input type="text" name="facilities[]" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                             <button type="button" class="bg-red-500 text-white px-3 py-1 rounded-md font-bold" onclick="removeField(this)">X</button>`;
             container.appendChild(div);
         }
 
         function addRule() {
             const container = document.getElementById('rule-container');
             const div = document.createElement('div');
-            div.className = 'group';
-            div.innerHTML = `<input type="text" name="rules[]" required>
-                             <button type="button" class="remove-btn" onclick="removeField(this)">X</button>`;
+            div.className = 'flex gap-2';
+            div.innerHTML = `<input type="text" name="rules[]" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                             <button type="button" class="text-red-500 px-3 py-1 rounded-md font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>`;
             container.appendChild(div);
         }
 
         function addPhoto() {
             const container = document.getElementById('photo-container');
             const div = document.createElement('div');
-            div.className = 'group';
-            div.innerHTML = `<input type="file" name="photos[]" accept="image/*" required>
-                             <button type="button" class="remove-btn" onclick="removeField(this)">X</button>`;
+            div.className = 'flex gap-2';
+            div.innerHTML = `<input type="file" name="photos[]" accept="image/*" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md">
+                             <button type="button" class="text-red-500 px-3 py-1 rounded-md font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>`;
             container.appendChild(div);
         }
 

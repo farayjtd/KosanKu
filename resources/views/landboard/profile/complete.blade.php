@@ -4,165 +4,133 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    
     <title>Lengkapi Profil Landboard</title>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f5f3f0;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        .card {
-            background: #fffaf6;
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 700px;
-            margin: auto;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-        }
-
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #5a4430;
-        }
-
-        .section-title {
-            margin-top: 26px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #5a4430;
-            border-bottom: 1px solid #ddd0c1;
-            padding-bottom: 6px;
-        }
-
-        label {
-            display: block;
-            margin-top: 16px;
-            font-weight: 600;
-            color: #6b4e3d;
-        }
-
-        input[type="text"],
-        input[type="file"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 6px;
-            border-radius: 8px;
-            border: 1px solid #cfc4b5;
-            font-size: 14px;
-            background: #fdfdfb;
-            color: #3f3f3f;
-            box-sizing: border-box;
-        }
-
-        button {
-            margin-top: 28px;
-            width: 100%;
-            padding: 12px;
-            background: #8d735b;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s ease;
-        }
-
-        button:hover {
-            background: #775d47;
-        }
-
-        .logout-btn {
-            background: #c94e4e;
-            margin-top: 16px;
-        }
-
-        .logout-btn:hover {
-            background: #a43737;
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                padding: 20px;
-                margin: 20px;
-            }
-
-            .main-content {
-                padding: 20px;
-            }
-        }
-    </style>
 </head>
-<body>
+<body class="bg-gray-200 font-sans m-0 w-screen h-screen">
 
-    {{-- Optional Sidebar --}}
-    {{-- @include('components.sidebar-landboard') --}}
+    <div class="flex flex-col md:flex-row w-full h-full">
+        <!-- Kiri: Form -->
+        <div class="w-full md:w-1/3 h-full p-6 md:p-10 overflow-y-auto bg-white rounded-r-4xl">
+            <div id="header-section">
+                <h2 class="text-2xl font-semibold mb-6 text-black text-center">Lengkapi Profil Anda</h2>
+                <div class="flex justify-center mb-6">
+                    <label for="avatar" class="relative group cursor-pointer">
+                        <img src="/assets/default-avatar.png" alt="" class="w-28 h-28 rounded-full object-cover border-4 border-white shadow-md group-hover:brightness-75 transition" />
+                        <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition text-white">
+                            <i class="bi bi-pen text-xl"></i>
+                        </div>
+                        <input type="file" id="avatar" name="avatar" accept="image/*" class="hidden" />
+                    </label>
+                </div>
+            </div>
 
-    <div class="main-content">
-        <div class="card">
-            <h2>Lengkapi Profil Anda</h2>
-
-            <form action="{{ route('landboard.complete-profile.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="profile-form" action="{{ route('landboard.complete-profile.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
-                <div class="section-title">Data Pribadi</div>
-                <label for="name">Nama Lengkap</label>
-                <input type="text" name="name" id="name" required>
+                <!-- Step Container -->
+                <div id="form-steps">
+                    <!-- Step 1: Data Pribadi -->
+                    <div class="form-step" id="step-1">
+                        <div class="text-lg font-bold text-black border-b border-[#ddd0c1] pb-1 mb-4"><i class="bi bi-person-lines-fill mr-3"></i>Data Pribadi</div>
 
-                <label for="phone">Nomor HP Utama</label>
-                <input type="text" name="phone" id="phone" required>
+                        <label for="name" class="block mt-2 font-semibold text-black">Nama Lengkap</label>
+                        <input type="text" name="name" id="name" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="alt_phone">Nomor HP Alternatif (Opsional)</label>
-                <input type="text" name="alt_phone" id="alt_phone">
+                        <label for="phone" class="block mt-4 font-semibold text-black">Nomor HP Utama</label>
+                        <input type="text" name="phone" id="phone" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="avatar">Foto Profil (Avatar)</label>
-                <input type="file" name="avatar" id="avatar" accept="image/*">
+                        <label for="alt_phone" class="block mt-4 font-semibold text-black">Nomor HP Alternatif (Opsional)</label>
+                        <input type="text" name="alt_phone" id="alt_phone" class="w-full p-2 rounded-md border border-[#cfc4b5]" />
+                    </div>
 
-                <div class="section-title">Data Kost</div>
-                <label for="kost_name">Nama Kost</label>
-                <input type="text" name="kost_name" id="kost_name" required>
+                    <!-- Step 2: Data Kost -->
+                    <div class="form-step hidden" id="step-2">
+                        <div class="text-lg font-bold text-black border-b border-[#ddd0c1] pb-1 mb-4"><i class="bi bi-house-exclamation-fill mr-3"></i>Data Kost</div>
 
-                <label for="province">Provinsi</label>
-                <input type="text" name="province" id="province" required>
+                        <label for="kost_name" class="block mt-2 font-semibold text-black">Nama Kost</label>
+                        <input type="text" name="kost_name" id="kost_name" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="city">Kota/Kabupaten</label>
-                <input type="text" name="city" id="city" required>
+                        <label for="province" class="block mt-4 font-semibold text-black">Provinsi</label>
+                        <input type="text" name="province" id="province" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="district">Kecamatan</label>
-                <input type="text" name="district" id="district" required>
+                        <label for="city" class="block mt-4 font-semibold text-black">Kota/Kabupaten</label>
+                        <input type="text" name="city" id="city" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="village">Kelurahan (Opsional)</label>
-                <input type="text" name="village" id="village">
+                        <label for="district" class="block mt-4 font-semibold text-black">Kecamatan</label>
+                        <input type="text" name="district" id="district" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="postal_code">Kode Pos (Opsional)</label>
-                <input type="text" name="postal_code" id="postal_code">
+                        <label for="village" class="block mt-4 font-semibold text-black">Kelurahan (Opsional)</label>
+                        <input type="text" name="village" id="village" class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <label for="full_address">Alamat Lengkap</label>
-                <input type="text" name="full_address" id="full_address" required>
+                        <label for="postal_code" class="block mt-4 font-semibold text-black">Kode Pos (Opsional)</label>
+                        <input type="text" name="postal_code" id="postal_code" class="w-full p-2 rounded-md border border-[#cfc4b5]" />
 
-                <div class="section-title">Informasi Bank</div>
-                <label for="bank_name">Nama Bank</label>
-                <input type="text" name="bank_name" id="bank_name" required>
+                        <label for="full_address" class="block mt-4 font-semibold text-black">Alamat Lengkap</label>
+                        <input type="text" name="full_address" id="full_address" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
+                    </div>
 
-                <label for="bank_account">Nomor Rekening</label>
-                <input type="text" name="bank_account" id="bank_account" required>
+                    <!-- Step 3: Informasi Bank -->
+                    <div class="form-step hidden" id="step-3">
+                        <div class="text-lg font-bold text-black border-b border-[#ddd0c1] pb-1 mb-4"><i class="bi bi-bank2 mr-3"></i>Informasi Bank</div>
 
-                <button type="submit">Simpan Profil</button>
+                        <label for="bank_name" class="block mt-2 font-semibold text-black">Nama Bank</label>
+                        <input type="text" name="bank_name" id="bank_name" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
+
+                        <label for="bank_account" class="block mt-4 font-semibold text-black">Nomor Rekening</label>
+                        <input type="text" name="bank_account" id="bank_account" required class="w-full p-2 rounded-md border border-[#cfc4b5]" />
+
+                        <button type="submit" class="mt-6 w-full py-3 bg-[#31c594] hover:bg-[#1a966d] text-white rounded-md text-base">Simpan Profil</button>
+                        <button type="submit" formaction="{{ route('logout') }}" formmethod="POST" class="mt-4 w-full py-3 bg-[#c94e4e] hover:bg-[#a43737] text-white rounded-md text-base">Logout</button>
+                    </div>
+                </div>
+
+                <!-- Navigasi Langkah -->
+                <div class="mt-6 flex justify-between">
+                    <button type="button" id="prev-btn" class="px-4 py-2 bg-gray-300 rounded-md text-sm hidden">Sebelumnya</button>
+                    <button type="button" id="next-btn" class="px-4 py-2 bg-[#31c594] hover:bg-[#1a966d] text-white rounded-md text-sm">Selanjutnya</button>
+                </div>
             </form>
+        </div>
 
-            <form action="{{ route('logout') }}" method="POST">
-                @csrf
-                <button type="submit" class="logout-btn">Logout</button>
-            </form>
+        <!-- Kanan: Gambar -->
+        <div class="hidden md:block md:w-1/2 h-full bg-cover bg-center" style="background-image: url('/assets/profil-illustration.png');">
         </div>
     </div>
 
+    <script>
+        const steps = document.querySelectorAll('.form-step');
+        let currentStep = 0;
+
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const headerSection = document.getElementById('header-section');
+
+        function updateStep() {
+            steps.forEach((step, index) => {
+                step.classList.toggle('hidden', index !== currentStep);
+            });
+            prevBtn.classList.toggle('hidden', currentStep === 0);
+            nextBtn.classList.toggle('hidden', currentStep === steps.length - 1);
+            headerSection.classList.toggle('hidden', currentStep !== 0);
+        }
+
+        nextBtn.addEventListener('click', () => {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateStep();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            if (currentStep > 0) {
+                currentStep--;
+                updateStep();
+            }
+        });
+
+        updateStep();
+    </script>
 </body>
 </html>

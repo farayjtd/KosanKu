@@ -2,215 +2,85 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Daftar Kamar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f5f3f0;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #5a4430;
-        }
-
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            width: 260px;
-            background: #fffaf6;
-            border: 1px solid #e0dcd5;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        .photo-carousel {
-            position: relative;
-            width: 100%;
-            height: 150px;
-            overflow: hidden;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .carousel-img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            display: none;
-        }
-
-        .carousel-img.active {
-            display: block;
-        }
-
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.4);
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .carousel-btn.prev { left: 6px; }
-        .carousel-btn.next { right: 6px; }
-
-        .status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: white;
-        }
-
-        .status.available { background: #10b981; }
-        .status.booked { background: #ef4444; }
-
-        .button,
-        button {
-            margin-top: 6px;
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-        .button:hover,
-        button:hover {
-            background: #2563eb;
-        }
-
-        .delete-btn {
-            background: #ef4444;
-        }
-
-        .delete-btn:hover {
-            background: #b91c1c;
-        }
-
-        form {
-            margin-top: 10px;
-        }
-
-        .info-token {
-            font-size: 12px;
-            margin-top: 8px;
-            color: #5a4430;
-        }
-
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 6px 8px;
-            margin-top: 6px;
-            border-radius: 6px;
-            border: 1px solid #d6ccc2;
-            font-size: 14px;
-        }
-
-        p {
-            margin: 4px 0;
-            font-size: 14px;
-        }
-    </style>
 </head>
-<body>
+<body class="bg-[#f5f3f0] min-h-screen">
 @include('components.sidebar-landboard')
 
-<div class="main-content">
-    <h2>Daftar Kamar</h2>
+<div class="main-content p-8">
+    <h2 class="text-2xl font-bold text-[#5a4430] mb-6">Daftar Kamar</h2>
 
     @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
+        <p class="text-green-600 font-semibold">{{ session('success') }}</p>
     @elseif (session('error'))
-        <p style="color: red;">{{ session('error') }}</p>
+        <p class="text-red-600 font-semibold">{{ session('error') }}</p>
     @endif
 
-    <div class="card-container">
+    <div class="flex flex-wrap gap-6">
         @foreach ($rooms as $room)
-            <div class="card">
+            <div class="w-64 bg-[#fffaf6] border border-[#e0dcd5] rounded-xl p-4 shadow-md">
                 <!-- Carousel -->
-                <div class="photo-carousel" data-room-id="{{ $room->id }}">
+                <div class="relative w-full h-36 overflow-hidden rounded-md mb-3" data-room-id="{{ $room->id }}">
                     @forelse ($room->photos as $index => $photo)
-                        <img src="{{ asset('storage/' . $photo->path) }}"
-                             class="carousel-img {{ $index === 0 ? 'active' : '' }}"
-                             data-index="{{ $index }}">
+                        <img src="{{ asset('storage/' . $photo->path) }}" class="w-full h-36 object-cover {{ $index === 0 ? 'block' : 'hidden' }} carousel-img" data-index="{{ $index }}">
                     @empty
-                        <img src="https://via.placeholder.com/240x140?text=No+Image" class="carousel-img active">
+                        <img src="https://via.placeholder.com/240x140?text=No+Image" class="w-full h-36 object-cover block carousel-img">
                     @endforelse
 
                     @if ($room->photos->count() > 1)
-                        <button class="carousel-btn prev" onclick="prevPhoto({{ $room->id }})">&#10094;</button>
-                        <button class="carousel-btn next" onclick="nextPhoto({{ $room->id }})">&#10095;</button>
+                        <button class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded-md text-sm carousel-btn prev" data-room="{{ $room->id }}">‹</button>
+                        <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded-md text-sm carousel-btn next" data-room="{{ $room->id }}">›</button>
                     @endif
                 </div>
 
-                <h4>{{ $room->room_number }}</h4>
-                <p><strong>{{ $room->type }}</strong></p>
-                <p>Rp{{ number_format($room->price, 0, ',', '.') }}</p>
-                <p>Gender: {{ ucfirst($room->gender_type) }}</p>
-                <p>Status: <span class="status {{ $room->status }}">{{ ucfirst($room->status) }}</span></p>
+                <h4 class="text-lg font-bold">{{ $room->room_number }}</h4>
+                <p class="text-sm font-semibold text-gray-600">{{ $room->type }}</p>
+                <p class="text-sm">Rp{{ number_format($room->price, 0, ',', '.') }}</p>
+                <p class="text-sm">Gender: {{ ucfirst($room->gender_type) }}</p>
+                <p class="text-sm">Status: <span class="px-2 py-1 text-white rounded text-xs {{ $room->status === 'available' ? 'bg-green-500' : 'bg-red-500' }}">{{ ucfirst($room->status) }}</span></p>
 
                 @php
                     $token = $room->token()->where('used', false)->where('expires_at', '>', now())->first();
                 @endphp
 
                 @if ($token)
-                    <div class="info-token">
+                    <div class="text-xs mt-2 text-[#5a4430]">
                         Token: <strong>{{ $token->token }}</strong><br>
                         Expire dalam: <span id="timer-{{ $room->id }}" data-expires="{{ $token->expires_at->toIso8601String() }}"></span>
                     </div>
 
-                    <form action="{{ route('tokens.use', $room->id) }}" method="POST">
+                    <form action="{{ route('tokens.use', $room->id) }}" method="POST" class="mt-2">
                         @csrf
-                        <input type="text" name="token" placeholder="Masukkan Token" maxlength="6" required>
-                        <button type="submit">Gunakan Token</button>
+                        <input type="text" name="token" placeholder="Masukkan Token" maxlength="6" required class="w-full mt-1 px-3 py-1 border rounded text-sm">
+                        <button type="submit" class="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-1 rounded text-sm">Gunakan Token</button>
                     </form>
                 @endif
 
-                <!-- Generate Token -->
-                <form action="{{ route('tokens.generate', $room->id) }}" method="POST">
+                <form action="{{ route('tokens.generate', $room->id) }}" method="POST" class="mt-2">
                     @csrf
-                    <select name="rental_duration" required>
+                    <select name="rental_duration" required class="w-full mt-1 px-2 py-1 border rounded text-sm">
                         <option value="">Durasi</option>
                         <option value="1">1 bulan</option>
                         <option value="3">3 bulan</option>
                         <option value="6">6 bulan</option>
                         <option value="12">12 bulan</option>
                     </select>
-                    <button type="submit" {{ $room->status === 'booked' ? 'disabled' : '' }}>Generate Token</button>
+                    <button type="submit" class="mt-2 w-full bg-blue-500 hover:bg-blue-600 text-white py-1 rounded text-sm" {{ $room->status === 'booked' ? 'disabled' : '' }}>Generate Token</button>
                 </form>
 
-                <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="button">Duplikat</a>
-                <a href="{{ route('landboard.rooms.show', $room->id) }}" class="button">Detail</a>
-                <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="button">Edit</a>
+                <div class="flex flex-wrap gap-2 mt-3">
+                    <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm">Duplikat</a>
+                    <a href="{{ route('landboard.rooms.show', $room->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm">Detail</a>
+                    <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="bg-blue-500 hover:bg-blue-600 text-white py-1 px-3 rounded text-sm">Edit</a>
+                </div>
 
-                <form action="{{ route('landboard.rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kamar ini?')">
+                <form action="{{ route('landboard.rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kamar ini?')" class="mt-2">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="delete-btn">Hapus</button>
+                    <button type="submit" class="w-full bg-red-500 hover:bg-red-700 text-white py-1 rounded text-sm">Hapus</button>
                 </form>
             </div>
         @endforeach
@@ -218,22 +88,36 @@
 </div>
 
 <script>
+    document.querySelectorAll('.carousel-btn.next').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const roomId = btn.dataset.room;
+        nextPhoto(roomId);
+    });
+});
+
+document.querySelectorAll('.carousel-btn.prev').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const roomId = btn.dataset.room;
+        prevPhoto(roomId);
+    });
+});
+
     function nextPhoto(roomId) {
         const container = document.querySelector(`.photo-carousel[data-room-id="${roomId}"]`);
         const images = container.querySelectorAll('.carousel-img');
-        let activeIndex = [...images].findIndex(img => img.classList.contains('active'));
-        images[activeIndex].classList.remove('active');
+        let activeIndex = [...images].findIndex(img => !img.classList.contains('hidden'));
+        images[activeIndex].classList.add('hidden');
         const nextIndex = (activeIndex + 1) % images.length;
-        images[nextIndex].classList.add('active');
+        images[nextIndex].classList.remove('hidden');
     }
 
     function prevPhoto(roomId) {
         const container = document.querySelector(`.photo-carousel[data-room-id="${roomId}"]`);
         const images = container.querySelectorAll('.carousel-img');
-        let activeIndex = [...images].findIndex(img => img.classList.contains('active'));
-        images[activeIndex].classList.remove('active');
+        let activeIndex = [...images].findIndex(img => !img.classList.contains('hidden'));
+        images[activeIndex].classList.add('hidden');
         const prevIndex = (activeIndex - 1 + images.length) % images.length;
-        images[prevIndex].classList.add('active');
+        images[prevIndex].classList.remove('hidden');
     }
 
     document.addEventListener('DOMContentLoaded', function () {

@@ -1,55 +1,36 @@
-<div style="background: #ede0d4; padding: 24px; height: 100vh; width: 240px; box-shadow: 2px 0 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center;">
+<div class="fixed bottom-6 left-1/2 transform -translate-x-1/2
+            bg-white rounded-lg shadow-[0px_0px_19px_3px_rgba(0,_0,_0,_0.1)] w-fit px-4 py-2 
+            flex items-center space-x-4 z-50">
     @php
-        $user = auth()->user();
+        $menu = [
+            ['icon' => 'bi-house-door', 'label' => 'Dashboard', 'route' => route('landboard.dashboard.index')],
+            ['icon' => 'bi-plus-circle', 'label' => 'Buat Kamar', 'route' => route('landboard.rooms.create-form')],
+            ['icon' => 'bi-card-list', 'label' => 'Data Kamar', 'route' => route('landboard.rooms.index')],
+            ['icon' => 'bi-person-vcard', 'label' => 'Tenant Menghuni', 'route' => route('landboard.current-tenants')],
+            ['icon' => 'bi-journal-text', 'label' => 'Riwayat Sewa', 'route' => route('landboard.rental-history.index')],
+            ['icon' => 'bi-exclamation-triangle', 'label' => 'Pengaturan Penalti', 'route' => route('penalty.edit')],
+            ['icon' => 'bi-person', 'label' => 'Profil', 'route' => route('landboard.profile.update-form')],
+        ];
     @endphp
 
-    {{-- Foto Profil --}}
-    <div style="text-align: center; margin-bottom: 24px;">
-        <img src="{{ $user && $user->avatar ? asset('storage/' . $user->avatar) : asset('default-avatar.png') }}"
-             alt="Avatar"
-             style="width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 2px solid #b08968;">
-        <p style="margin-top: 10px; font-weight: 600; color: #5e503f;">{{ $user->username ?? 'User' }}</p>
-    </div>
+    @foreach ($menu as $item)
+        <a href="{{ $item['route'] }}"
+           class="group relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-300 transition-colors">
+            <i class="bi {{ $item['icon'] }} text-xl text-[#1a966d]"></i>
+            <span class="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 bg-[#31c594] text-white text-xs rounded px-2 py-1 whitespace-nowrap transition-opacity duration-300 shadow-md z-10">
+                {{ $item['label'] }}
+            </span>
+        </a>
+    @endforeach
 
-    {{-- Navigasi --}}
-    <nav style="width: 100%;">
-        <ul style="list-style: none; padding: 0; margin: 0;">
-            @php
-                $navStyle = 'display: block; padding: 10px 16px; border-radius: 8px; color: #5e503f; text-decoration: none; font-size: 14px; transition: background 0.2s ease;';
-                $hoverScript = 'onmouseover="this.style.background=\'#ddb892\'" onmouseout="this.style.background=\'transparent\'"';
-            @endphp
-
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.dashboard.index') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>🏠 Dashboard</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.profile.update-form') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>⚙️ Profil</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.rooms.create-form') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>➕ Buat Kamar</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.rooms.index') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>📋 Data Kamar</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.current-tenants') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>👤 Tenant Menghuni</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('landboard.rental-history.index') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>📜 Riwayat Sewa</a>
-            </li>
-            <li style="margin-bottom: 8px;">
-                <a href="{{ route('penalty.edit') }}" style="{{ $navStyle }}" {!! $hoverScript !!}>⚖️ Pengaturan Penalti</a>
-            </li>
-            <li style="margin-top: 24px;">
-                <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
-                    @csrf
-                    <button type="submit"
-                            style="width: 100%; padding: 10px 16px; background: #b08968; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: background 0.2s ease;"
-                            onmouseover="this.style.background='#7f5539'" onmouseout="this.style.background='#b08968'">
-                        🚪 Logout
-                    </button>
-                </form>
-            </li>
-        </ul>
-    </nav>
+    <!-- <form action="{{ route('logout') }}" method="POST">
+        @csrf
+        <button type="submit"
+                class="group relative flex items-center justify-center w-10 h-10 bg-red-500 hover:bg-red-700 text-white rounded-lg transition-colors">
+            <i class="bi bi-box-arrow-right text-xl"></i>
+            <span class="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 bg-red-500 text-white text-xs rounded px-2 py-1 whitespace-nowrap transition-opacity duration-300 shadow-md z-10">
+                Logout
+            </span>
+        </button>
+    </form> -->
 </div>
