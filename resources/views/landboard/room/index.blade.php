@@ -29,24 +29,23 @@
             @endphp
 
             @foreach ($grouped as $type => $roomGroup)
-                @php
-                    $tersedia = $roomGroup->where('status', 'available')->count();
-                    $terpakai = $roomGroup->where('status', 'booked')->count();
-                @endphp
-                <div class="bg-white rounded-xl shadow p-4">
-                    <div class="text-center text-lg font-bold text-gray-800 mb-3 border-b pb-2">{{ strtoupper($type) }}</div>
-                    <div class="flex justify-between text-center text-sm font-semibold text-white">
-                        <div class="bg-green-500 w-1/2 py-3 rounded-l-lg">
-                            <p>Available</p>
-                            <p class="text-xl">{{ $tersedia }}</p>
-                        </div>
-                        <div class="bg-red-500 w-1/2 py-3 rounded-r-lg">
-                            <p>Booked</p>
-                            <p class="text-xl">{{ $terpakai }}</p>
-                        </div>
+            @php
+                $tersedia = $roomGroup->where('status', 'available')->count();
+                $terpakai = $roomGroup->where('status', 'booked')->count();
+            @endphp
+            <div class="bg-white rounded-lg shadow p-3 text-sm">
+                <p class="font-semibold text-center text-gray-700 mb-2">{{ strtoupper($type) }}</p>
+                <div class="flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-1 text-green-600 font-medium">
+                        <i class="bi bi-check-circle"></i> Available: <span class="font-bold">{{ $tersedia }}</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-red-600 font-medium">
+                        <i class="bi bi-cash-coin"></i> Booked: <span class="font-bold">{{ $terpakai }}</span>
                     </div>
                 </div>
+            </div>
             @endforeach
+
         </div>
         <div class="w-2/3 bg-white rounded-xl shadow p-4 overflow-y-auto">
             @if (session('success'))
@@ -105,6 +104,7 @@
                                 <button type="submit" class="mt-2 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-1 rounded text-sm">Gunakan Token</button>
                             </form>
                         @else
+                        @if ($room->status === 'available')
                             <form action="{{ route('tokens.generate', $room->id) }}" method="POST" class="mt-2">
                                 @csrf
                                 <select name="rental_duration" required class="w-full mt-1 px-2 py-1 border rounded text-sm">
@@ -114,8 +114,9 @@
                                     <option value="6">6 bulan</option>
                                     <option value="12">12 bulan</option>
                                 </select>
-                                <button type="submit" class="mt-2 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-1 rounded text-sm" {{ $room->status === 'booked' ? 'disabled' : '' }}>Generate Token</button>
+                                <button type="submit" class="mt-2 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-1 rounded text-sm">Generate Token</button>
                             </form>
+                        @endif
                         @endif
                     </div>
                 @endforeach

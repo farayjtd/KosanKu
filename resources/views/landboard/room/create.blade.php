@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Tambah Kamar</title>
 </head>
-<body class="bg-gray-200 font-sans pb-16">
+<body class="bg-gray-200 font-sans min-h-screen p-6">
     @include('components.sidebar-landboard')
 
     <div class="flex-1 p-6">
@@ -32,13 +32,13 @@
                 <div class="flex flex-col lg:flex-row gap-8">
                     <div class="flex-1">
                         <label class="block font-semibold text-black mt-4"><i class="bi bi-building-exclamation mr-2"></i>Tipe Kamar</label>
-                        <input type="text" name="type" value="{{ old('type') }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                        <input type="text" name="type" value="{{ old('type') }}" required class="w-full mt-1 p-3 rounded-md border border-black">
 
                         <label class="block font-semibold text-black mt-4"><i class="bi bi-door-open mr-2"></i>Jumlah Kamar</label>
-                        <input type="number" name="room_quantity" min="1" value="{{ old('room_quantity', 1) }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                        <input type="number" name="room_quantity" min="1" value="{{ old('room_quantity', 1) }}" required class="w-full mt-1 p-3 rounded-md border border-black">
 
                         <label class="block font-semibold text-black mt-4"><i class="bi bi-gender-ambiguous mr-2"></i>Jenis Kelamin yang Diizinkan</label>
-                        <select name="gender_type" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                        <select name="gender_type" required class="w-full mt-1 p-3 rounded-md border border-black">
                             <option value="mixed" {{ old('gender_type') == 'mixed' ? 'selected' : '' }}>Campuran</option>
                             <option value="male" {{ old('gender_type') == 'male' ? 'selected' : '' }}>Laki-laki</option>
                             <option value="female" {{ old('gender_type') == 'female' ? 'selected' : '' }}>Perempuan</option>
@@ -65,12 +65,12 @@
 
                     <div class="flex-1">
                         <label class="block font-semibold text-black mt-4 "><i class="bi bi-tags mr-2"></i>Harga per Bulan</label>
-                        <input type="number" name="price" value="{{ old('price') }}" required class="w-full mt-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                        <input type="number" name="price" value="{{ old('price') }}" required class="w-full mt-1 p-3 rounded-md border border-black">
                         
-                        <label class="block font-semibold text-black mt-6"><i class="bi bi-house-exclamation mr-2"></i>Aturan</label>
+                        <label class="block font-semibold text-black mt-5"><i class="bi bi-house-exclamation mr-2"></i>Aturan</label>
                         <div id="rule-container" class="space-y-2">
                             <div class="flex gap-2">
-                                <input type="text" name="rules[]" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md bg-[#fdfdfb]">
+                                <input type="text" name="rules[]" required class="flex-1 p-3 border border-black rounded-md">
                                 <button type="button" class="text-red-500 px-3 py-1 rounded-4xl font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                         <label class="block font-semibold text-black mt-6"><i class="bi bi-image mr-2"></i>Foto Kamar</label>
                         <div id="photo-container" class="space-y-2">
                             <div class="flex gap-2">
-                                <input type="file" name="photos[]" accept="image/*" required class="flex-1 p-3 border border-[#d6ccc2] rounded-md">
+                                <input type="file" name="photos[]" accept="image/*" required class="flex-1 p-3 border border-black rounded-md">
                                 <button type="button" class="text-red-500 px-3 py-1 rounded-md font-bold" onclick="removeField(this)"><i class="bi bi-dash-lg"></i></button>
                             </div>
                         </div>

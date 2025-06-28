@@ -14,14 +14,22 @@
     @endphp
 
     @foreach ($menu as $item)
+        @php
+            $isActive = request()->url() === $item['route'];
+        @endphp
         <a href="{{ $item['route'] }}"
-           class="group relative flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-300 transition-colors">
-            <i class="bi {{ $item['icon'] }} text-xl text-[#1a966d]"></i>
-            <span class="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 bg-[#31c594] text-white text-xs rounded px-2 py-1 whitespace-nowrap transition-opacity duration-300 shadow-md z-10">
+        class="group relative flex items-center justify-center w-10 h-10 rounded-lg transition-colors
+                {{ $isActive ? 'bg-[#1a966d] text-white' : 'hover:bg-gray-300' }}">
+            <i class="bi {{ $item['icon'] }} text-xl {{ $isActive ? 'text-white' : 'text-[#1a966d]' }}"></i>
+            <span class="absolute bottom-full mb-1 opacity-0 group-hover:opacity-100 
+                        {{ $isActive ? 'bg-[#1a966d]' : 'bg-[#31c594]' }}
+                        text-white text-xs rounded px-2 py-1 whitespace-nowrap 
+                        transition-opacity duration-300 shadow-md z-10">
                 {{ $item['label'] }}
             </span>
         </a>
     @endforeach
+
 
     <!-- <form action="{{ route('logout') }}" method="POST">
         @csrf

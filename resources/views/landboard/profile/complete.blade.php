@@ -11,7 +11,6 @@
 <body class="bg-gray-200 font-sans m-0 w-screen h-screen">
 
     <div class="flex flex-col md:flex-row w-full h-full">
-        <!-- Kiri: Form -->
         <div class="w-full md:w-1/3 h-full p-6 md:p-10 overflow-y-auto bg-white rounded-r-4xl">
             <div id="header-section">
                 <h2 class="text-2xl font-semibold mb-6 text-black text-center">Lengkapi Profil Anda</h2>

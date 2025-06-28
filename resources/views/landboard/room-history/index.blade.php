@@ -4,136 +4,64 @@
     <meta charset="UTF-8">
     <title>Riwayat Sewa</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f4ebe3;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            background: #fffaf4;
-        }
-
-        .card {
-            background: #ffffff;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 1080px;
-            margin: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-        }
-
-        h2 {
-            color: #5e503f;
-            margin-bottom: 24px;
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 14px 18px;
-            text-align: left;
-            font-size: 14px;
-            border-bottom: 1px solid #eadbc8;
-        }
-
-        th {
-            background: #f3e5d8;
-            font-weight: bold;
-            color: #5e503f;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .status-ongoing {
-            color: #1a7f5a;
-            font-weight: bold;
-        }
-
-        .status-finished {
-            color: #b45309;
-            font-weight: bold;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 20px;
-            color: #8b735c;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                padding: 20px;
-            }
-            th, td {
-                font-size: 13px;
-                padding: 10px 12px;
-            }
-        }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
-<body>
+<body class="font-sans pb-6 m-0 flex flex-col min-h-screen bg-gray-200">
 
 @include('components.sidebar-landboard')
 
-<div class="main-content">
-    <div class="card">
-        <h2>Riwayat Sewa Tenant</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Nama Tenant</th>
-                    <th>Kamar</th>
-                    <th>Durasi</th>
-                    <th>Mulai</th>
-                    <th>Selesai</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($histories as $history)
-                    @php
-                        $start = \Carbon\Carbon::parse($history->start_date);
-                        $end = $history->end_date
-                            ? \Carbon\Carbon::parse($history->end_date)
-                            : $start->copy()->addMonths($history->duration_months);
-                        $isFinished = $history->end_date !== null || now()->gte($end);
-                    @endphp
-                    <tr>
-                        <td>{{ $history->tenant->account->name ?? '-' }}</td>
-                        <td>{{ $history->room->room_number ?? '-' }}</td>
-                        <td>{{ $history->duration_months }} bln</td>
-                        <td>{{ $start->format('d-m-Y') }}</td>
-                        <td>{{ $end->format('d-m-Y') }}</td>
-                        <td>
-                            <span class="{{ $isFinished ? 'status-finished' : 'status-ongoing' }}">
-                                {{ $isFinished ? 'Selesai' : 'Masih berjalan' }}
-                            </span>
-                        </td>
+<div class="flex-1 p-6 md:p-8">
+    <div class="max-w-6xl mx-auto mb-6">
+        <form action="{{ route('landboard.rooms.index') }}" method="GET" class="relative">
+            <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari tenant..."
+                class="w-full pl-12 pr-4 py-3 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#31c594] bg-white">
+        </form>
+    </div>
+    <div class="bg-white rounded-xl shadow-lg max-w-6xl mx-auto p-8">
+        <h2 class="text-2xl font-bold text-black text-center mb-6">Riwayat Sewa Tenant</h2>
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm text-left border-collapse">
+                <thead>
+                    <tr class="bg-[#31c594] text-white">
+                        <th class="py-3 px-4 font-bold">Nama Tenant</th>
+                        <th class="py-3 px-4 font-bold">Kamar</th>
+                        <th class="py-3 px-4 font-bold">Durasi</th>
+                        <th class="py-3 px-4 font-bold">Mulai</th>
+                        <th class="py-3 px-4 font-bold">Selesai</th>
+                        <th class="py-3 px-4 font-bold">Status</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="6" class="empty">Tidak ada riwayat sewa ditemukan.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="bg-white text-gray-700">
+                    @forelse ($histories as $history)
+                        @php
+                            $start = \Carbon\Carbon::parse($history->start_date);
+                            $end = $history->end_date
+                                ? \Carbon\Carbon::parse($history->end_date)
+                                : $start->copy()->addMonths($history->duration_months);
+                            $isFinished = $history->end_date !== null || now()->gte($end);
+                        @endphp
+                        <tr class="border-b border-[#eadbc8] last:border-b-0">
+                            <td class="py-3 px-4">{{ $history->tenant->account->name ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $history->room->room_number ?? '-' }}</td>
+                            <td class="py-3 px-4">{{ $history->duration_months }} bln</td>
+                            <td class="py-3 px-4">{{ $start->format('d-m-Y') }}</td>
+                            <td class="py-3 px-4">{{ $end->format('d-m-Y') }}</td>
+                            <td class="py-3 px-4 font-semibold">
+                                <span class="{{ $isFinished ? 'text-yellow-600' : 'text-green-700' }}">
+                                    {{ $isFinished ? 'Selesai' : 'Masih berjalan' }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-6 italic text-[#8b735c]">Tidak ada riwayat sewa ditemukan.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
