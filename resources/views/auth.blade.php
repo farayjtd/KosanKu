@@ -5,198 +5,132 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>KosanKu - Login & Daftar</title>
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: #f4f1ee;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .container {
-      width: 100%;
-      max-width: 460px;
-      padding: 20px;
-    }
-
-    .header {
-      text-align: center;
-      margin-top: 40px;
-    }
-
-    .header h1 {
-      color: #6b4f3b;
-      font-size: 2.4em;
-      margin-bottom: 6px;
-    }
-
-    .header p {
-      color: #888;
-      font-size: 1em;
-    }
-
-    form {
-      background: #fff;
-      padding: 24px 28px;
-      margin: 20px 0;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-      border: 1px solid #ddd;
-    }
-
-    h2 {
-      color: #4b3b2f;
-      margin-bottom: 14px;
-      font-size: 1.4em;
-      text-align: center;
-    }
-
-    label {
-      display: block;
-      margin-top: 14px;
-      font-weight: 600;
-      color: #4a4a4a;
-    }
-
-    input, select {
-      width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      background-color: #fdfaf8;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px;
-      width: 100%;
-      background: #8b5e3c;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s ease;
-    }
-
-    button:hover {
-      background: #6b4f3b;
-    }
-
-    .alert {
-      background: #fcebea;
-      color: #8b0000;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .success {
-      background: #edf7ed;
-      color: #2f513c;
-      padding: 12px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 16px;
-      }
-
-      form {
-        padding: 20px;
-      }
-
-      h2 {
-        font-size: 1.2em;
-      }
-
-      .header h1 {
-        font-size: 2em;
-      }
-    }
-  </style>
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-
-  <div class="container">
-    <div class="header">
-      <h1>KosanKu</h1>
-      <p>Sistem Manajemen Kost Modern</p>
+<body class="bg-gray-200 font-sans min-h-screen">
+  <div class="min-h-screen flex">
+    <div class="lg:flex lg:w-1/2 relative overflow-hidden">
+      <div class="bg-[url('/assets/login-pict.png')] bg-no-repeat bg-cover bg-center w-full h-full"></div>
     </div>
 
-    {{-- Form Registrasi --}}
-    <form action="{{ route('signup.process') }}" method="POST">
-      <h2>Daftar Akun</h2>
-      @csrf
+    <div class="w-full lg:w-1/2 flex items-center justify-center p-8">
+      <div class="w-full max-w-md">
+        <div id="register-form" class="bg-white p-8 rounded-2xl shadow-xl border-gray-200">
+          <h2 class="text-[#31c594] mb-6 text-2xl font-bold text-center">Daftar Akun</h2>
+          
+          <form action="{{ route('signup.process') }}" method="POST">
+            @csrf
 
-      @if ($errors->any())
-        <div class="alert">
-          <ul style="padding-left: 20px; margin: 0;">
-            @foreach ($errors->all() as $error)
-              <li>{{ $error }}</li>
-            @endforeach
-          </ul>
+            @if ($errors->any())
+              <div class="bg-red-50 text-red-800 p-3 mb-4 rounded-lg text-sm">
+                <ul class="list-disc pl-5 m-0">
+                  @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                  @endforeach
+                </ul>
+              </div>
+            @endif
+
+            <div class="space-y-4">
+              <div>
+                <label for="username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                <input type="text" id="username" name="username" value="{{ old('username') }}" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 transition-all">
+              </div>
+
+              <div>
+                <label for="password" class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <input type="password" id="password" name="password" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 transition-all">
+              </div>
+
+              <div>
+                <label for="password_confirmation" class="block text-sm font-semibold text-gray-700 mb-1">Konfirmasi Password</label>
+                <input type="password" id="password_confirmation" name="password_confirmation" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 transition-all">
+              </div>
+
+              <div>
+                <label for="email" class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                <input type="email" id="email" name="email" value="{{ old('email') }}" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 transition-all">
+              </div>
+
+              <div>
+                <label for="role" class="block text-sm font-semibold text-gray-700 mb-1">Daftar Sebagai</label>
+                <select id="role" name="role" required 
+                        class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 transition-all">
+                  <option value="">-- Pilih --</option>
+                  <option value="landboard" {{ old('role') == 'landboard' ? 'selected' : '' }}>Pemilik Kost</option>
+                  <option value="tenant" {{ old('role') == 'tenant' ? 'selected' : '' }}>Pencari Kost</option>
+                </select>
+              </div>
+            </div>
+
+            <button type="submit" 
+                    class="mt-6 p-3 w-full bg-[#31c594] text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-[#1a966d] transform hover:scale-[1.02]">
+              Daftar Sekarang
+            </button>
+          </form>
+
+          <!-- Link ke Login -->
+          <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+              Sudah punya akun? 
+              <button onclick="showLogin()" class="text-[#31c594] hover:text-[#1a966d] font-semibold hover:underline transition-colors">
+                Masuk di sini
+              </button>
+            </p>
+          </div>
         </div>
-      @endif
 
-      <label for="username">Username</label>
-      <input type="text" id="username" name="username" value="{{ old('username') }}" required>
+        <div id="login-form" class="bg-white p-8 rounded-2xl shadow-xl border border-gray-200 hidden">
+          <h2 class="text-[#31c594] mb-6 text-2xl font-bold text-center">Masuk Akun</h2>
+          
+          <form action="{{ route('login.process') }}" method="POST">
+            @csrf
 
-      <label for="password">Password</label>
-      <input type="password" id="password" name="password" required>
+            @if (session('success'))
+              <div class="bg-green-50 text-green-800 p-3 mb-4 rounded-lg text-sm">{{ session('success') }}</div>
+            @endif
 
-      <label for="password_confirmation">Konfirmasi Password</label>
-      <input type="password" id="password_confirmation" name="password_confirmation" required>
+            @if ($errors->has('username'))
+              <div class="bg-red-50 text-red-800 p-3 mb-4 rounded-lg text-sm">{{ $errors->first('username') }}</div>
+            @endif
 
-      <label for="email">Email</label>
-      <input type="email" id="email" name="email" value="{{ old('email') }}" required>
+            <div class="space-y-4">
+              <div>
+                <label for="login_username" class="block text-sm font-semibold text-gray-700 mb-1">Username</label>
+                <input type="text" id="login_username" name="username" value="{{ old('username') }}" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:outline-none transition-all">
+              </div>
 
-      <label for="role">Daftar Sebagai</label>
-      <select id="role" name="role" required>
-        <option value="">-- Pilih --</option>
-        <option value="landboard" {{ old('role') == 'landboard' ? 'selected' : '' }}>Pemilik Kost</option>
-        <option value="tenant" {{ old('role') == 'tenant' ? 'selected' : '' }}>Pencari Kost</option>
-      </select>
+              <div>
+                <label for="login_password" class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <input type="password" id="login_password" name="password" required 
+                       class="w-full p-3 border border-gray-300 rounded-lg text-sm bg-gray-50 focus:outline-none transition-all">
+              </div>
+            </div>
 
-      <button type="submit">Daftar</button>
-    </form>
+            <button type="submit" 
+                    class="mt-6 p-3 w-full bg-[#31c594] text-white border-none rounded-lg text-base font-semibold cursor-pointer transition-all duration-300 hover:bg-[#1a966d] transform hover:scale-[1.02]">
+              Masuk
+            </button>
+          </form>
 
-    {{-- Form Login --}}
-    <form action="{{ route('login.process') }}" method="POST">
-      <h2>Masuk Akun</h2>
-      @csrf
-
-      @if (session('success'))
-        <div class="success">{{ session('success') }}</div>
-      @endif
-
-      @if ($errors->has('username'))
-        <div class="alert">{{ $errors->first('username') }}</div>
-      @endif
-
-      <label for="login_username">Username</label>
-      <input type="text" id="login_username" name="username" value="{{ old('username') }}" required>
-
-      <label for="login_password">Password</label>
-      <input type="password" id="login_password" name="password" required>
-
-      <button type="submit">Login</button>
-    </form>
+          <!-- Link ke Register -->
+          <div class="mt-6 text-center">
+            <p class="text-gray-600 text-sm">
+              Belum punya akun? 
+              <button onclick="showRegister()" class="text-[#31c594] hover:text-[#1a966d] font-semibold hover:underline transition-colors">
+                Daftar di sini
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-
 </body>
+<script src="/js/script.js"></script>
 </html>

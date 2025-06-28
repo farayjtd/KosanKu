@@ -2,128 +2,72 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <title>Tenant yang Menghuni</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f4ebe3;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 40px;
-            background: #fffaf4;
-        }
-
-        .card {
-            background: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            max-width: 960px;
-            margin: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.04);
-        }
-
-        h2 {
-            color: #5e503f;
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background-color: #fff;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 14px 18px;
-            text-align: left;
-            font-size: 14px;
-            border-bottom: 1px solid #eadbc8;
-        }
-
-        th {
-            background: #f3e5d8;
-            font-weight: bold;
-            color: #5e503f;
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .action-link {
-            color: #b08968;
-            font-weight: bold;
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        .action-link:hover {
-            text-decoration: underline;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 24px;
-            color: #8b735c;
-            font-style: italic;
-        }
-
-        @media (max-width: 768px) {
-            .card {
-                padding: 20px;
-            }
-            th, td {
-                font-size: 13px;
-                padding: 10px 12px;
-            }
-        }
-    </style>
+    <title>Daftar Tenant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
 </head>
-<body>
-
+<body class="bg-gray-200 font-sans pb-6 m-0 flex flex-col min-h-screen">
     @include('components.sidebar-landboard')
-
-    <div class="main-content">
-        <div class="card">
-            <h2>Daftar Tenant yang Sedang Menghuni</h2>
-
-            @if ($currentTenants->isEmpty())
-                <div class="empty">Tidak ada tenant yang sedang menghuni saat ini.</div>
-            @else
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Username</th>
-                            <th>Nama</th>
-                            <th>No. Kamar</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($currentTenants as $item)
-                            <tr>
-                                <td>{{ $item->tenant->account->username ?? '-' }}</td>
-                                <td>{{ $item->tenant->account->name ?? '-' }}</td>
-                                <td>{{ $item->room->room_number ?? '-' }}</td>
-                                <td>
-                                    <a href="{{ route('landboard.current-tenants.show', $item->id) }}" class="action-link">Detail</a>
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            @endif
+    <div class="flex-1 p-6 md:p-8">
+        <div class="max-w-7xl mx-auto mb-6">
+            <form action="{{ route('landboard.rooms.index') }}" method="GET" class="relative">
+                <i class="bi bi-search absolute left-4 top-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari tenant..."
+                    class="w-full pl-12 pr-4 py-3 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#31c594] bg-white">
+            </form>
+        </div>
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row gap-6">
+            <div class="w-full lg:w-1/3 grid grid-cols-2 gap-4">
+                <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-700">Belum Bayar</h3>
+                    <p class="text-2xl font-bold text-red-500 mt-2">{{ $belumBayar ?? 0 }}</p>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-700">Sudah Lunas</h3>
+                    <p class="text-2xl font-bold text-green-500 mt-2">{{ $sudahLunas ?? 0 }}</p>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-700">Total Tenant</h3>
+                    <p class="text-2xl font-bold text-blue-500 mt-2">{{ $currentTenants->count() }}</p>
+                </div>
+                <div class="bg-white rounded-xl shadow p-6 flex flex-col items-center justify-center text-center">
+                    <h3 class="text-lg font-semibold text-gray-700">Pelanggaran</h3>
+                    <p class="text-2xl font-bold text-yellow-500 mt-2">{{ $jumlahPelanggaran ?? 0 }}</p>
+                </div>
+            </div>
+            <div class="w-full lg:w-2/3 bg-white p-6 rounded-xl shadow-md">
+                <h2 class="text-2xl font-semibold text-black text-center mb-6">Daftar Tenant yang Sedang Menghuni</h2>
+                @if ($currentTenants->isEmpty())
+                    <div class="text-center text-red-500 italic py-6">Tidak ada tenant yang sedang menghuni saat ini.</div>
+                @else
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full border-collapse bg-white rounded-lg overflow-hidden">
+                            <thead>
+                                <tr class="bg-[#31c594] text-black font-bold text-sm">
+                                    <th class="px-5 py-3 text-left">Username</th>
+                                    <th class="px-5 py-3 text-left">Nama</th>
+                                    <th class="px-5 py-3 text-left">No. Kamar</th>
+                                    <th class="px-5 py-3 text-left">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="text-sm text-gray-700">
+                                @foreach ($currentTenants as $item)
+                                    <tr class="border-b border-gray-200 last:border-b-0">
+                                        <td class="px-5 py-3">{{ $item->tenant->account->username ?? '-' }}</td>
+                                        <td class="px-5 py-3">{{ $item->tenant->account->name ?? '-' }}</td>
+                                        <td class="px-5 py-3">{{ $item->room->room_number ?? '-' }}</td>
+                                        <td class="px-5 py-3">
+                                            <a href="{{ route('landboard.current-tenants.show', $item->id) }}" class="text-[#31c594] font-semibold hover:underline">Detail</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
-
 </body>
 </html>

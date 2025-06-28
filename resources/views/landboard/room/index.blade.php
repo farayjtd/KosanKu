@@ -2,259 +2,225 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <title>Daftar Kamar</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', sans-serif;
-            display: flex;
-            background: #f5f3f0;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 30px;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #5a4430;
-        }
-
-        .card-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
-
-        .card {
-            width: 260px;
-            background: #fffaf6;
-            border: 1px solid #e0dcd5;
-            border-radius: 12px;
-            padding: 16px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-        }
-
-        .photo-carousel {
-            position: relative;
-            width: 100%;
-            height: 150px;
-            overflow: hidden;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
-
-        .carousel-img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-            display: none;
-        }
-
-        .carousel-img.active {
-            display: block;
-        }
-
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(0,0,0,0.4);
-            color: white;
-            border: none;
-            padding: 4px 8px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        .carousel-btn.prev { left: 6px; }
-        .carousel-btn.next { right: 6px; }
-
-        .status {
-            font-size: 12px;
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: white;
-        }
-
-        .status.available { background: #10b981; }
-        .status.booked { background: #ef4444; }
-
-        .button,
-        button {
-            margin-top: 6px;
-            display: inline-block;
-            background: #3b82f6;
-            color: white;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            text-decoration: none;
-        }
-
-        .button:hover,
-        button:hover {
-            background: #2563eb;
-        }
-
-        .delete-btn {
-            background: #ef4444;
-        }
-
-        .delete-btn:hover {
-            background: #b91c1c;
-        }
-
-        form {
-            margin-top: 10px;
-        }
-
-        .info-token {
-            font-size: 12px;
-            margin-top: 8px;
-            color: #5a4430;
-        }
-
-        input[type="text"],
-        select {
-            width: 100%;
-            padding: 6px 8px;
-            margin-top: 6px;
-            border-radius: 6px;
-            border: 1px solid #d6ccc2;
-            font-size: 14px;
-        }
-
-        p {
-            margin: 4px 0;
-            font-size: 14px;
-        }
+        .dropdown { display: none; }
+        .dropdown.show { display: block; }
     </style>
 </head>
-<body>
+<body class="bg-gray-100 font-sans">
 @include('components.sidebar-landboard')
 
-<div class="main-content">
-    <h2>Daftar Kamar</h2>
+<div class="max-w-7xl mx-auto mt-6 px-4 pb-24">
+    <div class="sticky top-0 z-40 p-2 mb-4 rounded-xl">
+        <form action="{{ route('landboard.rooms.index') }}" method="GET" class="relative">
+            <i class="bi bi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-lg"></i>
+            <input type="text" name="search" value="{{ request('search') }}" placeholder= "Cari kamar..."
+                class="w-full pl-10 py-2 rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-[#31c594]">
+        </form>
+    </div>
+    <div class="flex h-[calc(100vh-5rem)] gap-6 overflow-hidden">
+        <div class="w-1/3 flex flex-col gap-4 self-stretch overflow-y-auto pr-1">
+            @php
+                $grouped = $rooms->groupBy('type');
+            @endphp
 
-    @if (session('success'))
-        <p style="color: green;">{{ session('success') }}</p>
-    @elseif (session('error'))
-        <p style="color: red;">{{ session('error') }}</p>
-    @endif
-
-    <div class="card-container">
-        @foreach ($rooms as $room)
-            <div class="card">
-                <!-- Carousel -->
-                <div class="photo-carousel" data-room-id="{{ $room->id }}">
-                    @forelse ($room->photos as $index => $photo)
-                        <img src="{{ asset('storage/' . $photo->path) }}"
-                             class="carousel-img {{ $index === 0 ? 'active' : '' }}"
-                             data-index="{{ $index }}">
-                    @empty
-                        <img src="https://via.placeholder.com/240x140?text=No+Image" class="carousel-img active">
-                    @endforelse
-
-                    @if ($room->photos->count() > 1)
-                        <button class="carousel-btn prev" onclick="prevPhoto({{ $room->id }})">&#10094;</button>
-                        <button class="carousel-btn next" onclick="nextPhoto({{ $room->id }})">&#10095;</button>
-                    @endif
-                </div>
-
-                <h4>{{ $room->room_number }}</h4>
-                <p><strong>{{ $room->type }}</strong></p>
-                <p>Rp{{ number_format($room->price, 0, ',', '.') }}</p>
-                <p>Gender: {{ ucfirst($room->gender_type) }}</p>
-                <p>Status: <span class="status {{ $room->status }}">{{ ucfirst($room->status) }}</span></p>
-
-                @php
-                    $token = $room->token()->where('used', false)->where('expires_at', '>', now())->first();
-                @endphp
-
-                @if ($token)
-                    <div class="info-token">
-                        Token: <strong>{{ $token->token }}</strong><br>
-                        Expire dalam: <span id="timer-{{ $room->id }}" data-expires="{{ $token->expires_at->toIso8601String() }}"></span>
+            @foreach ($grouped as $type => $roomGroup)
+            @php
+                $tersedia = $roomGroup->where('status', 'available')->count();
+                $terpakai = $roomGroup->where('status', 'booked')->count();
+            @endphp
+            <div class="bg-white rounded-lg shadow p-3 text-sm">
+                <p class="font-semibold text-center text-gray-700 mb-2">{{ strtoupper($type) }}</p>
+                <div class="flex justify-between items-center text-xs">
+                    <div class="flex items-center gap-1 text-green-600 font-medium">
+                        <i class="bi bi-check-circle"></i> Available: <span class="font-bold">{{ $tersedia }}</span>
                     </div>
-
-                    <form action="{{ route('tokens.use', $room->id) }}" method="POST">
-                        @csrf
-                        <input type="text" name="token" placeholder="Masukkan Token" maxlength="6" required>
-                        <button type="submit">Gunakan Token</button>
-                    </form>
-                @endif
-
-                <!-- Generate Token -->
-                <form action="{{ route('tokens.generate', $room->id) }}" method="POST">
-                    @csrf
-                    <select name="rental_duration" required>
-                        <option value="">Durasi</option>
-                        <option value="1">1 bulan</option>
-                        <option value="3">3 bulan</option>
-                        <option value="6">6 bulan</option>
-                        <option value="12">12 bulan</option>
-                    </select>
-                    <button type="submit" {{ $room->status === 'booked' ? 'disabled' : '' }}>Generate Token</button>
-                </form>
-
-                <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="button">Duplikat</a>
-                <a href="{{ route('landboard.rooms.show', $room->id) }}" class="button">Detail</a>
-                <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="button">Edit</a>
-
-                <form action="{{ route('landboard.rooms.destroy', $room->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus kamar ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="delete-btn">Hapus</button>
-                </form>
+                    <div class="flex items-center gap-1 text-red-600 font-medium">
+                        <i class="bi bi-cash-coin"></i> Booked: <span class="font-bold">{{ $terpakai }}</span>
+                    </div>
+                </div>
             </div>
-        @endforeach
+            @endforeach
+
+        </div>
+        <div class="w-2/3 bg-white rounded-xl shadow p-4 overflow-y-auto">
+            @if (session('success'))
+                <p class="text-green-600 font-semibold my-2">{{ session('success') }}</p>
+            @elseif (session('error'))
+                <p class="text-red-600 font-semibold my-2">{{ session('error') }}</p>
+            @endif
+            <div class="flex flex-wrap gap-4 mt-4" id="room-list">
+                @foreach ($rooms as $index => $room)
+                    <div class="w-full sm:w-[48%] bg-white rounded-xl p-6 shadow relative {{ $index >= 4 ? 'hidden extra-room' : '' }}">
+                        <div class="absolute top-2 right-2">
+                            <button class="text-xl kebab-toggle" data-room="{{ $room->id }}">⋮</button>
+                            <div class="dropdown absolute right-0 mt-2 w-32 bg-white border rounded shadow z-10 p-1 kebab-menu" data-room="{{ $room->id }}">
+                                <a href="{{ route('landboard.rooms.show', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-info-circle mr-2"></i>Detail</a>
+                                <a href="{{ route('landboard.rooms.duplicate-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-copy mr-2"></i>Duplikat</a>
+                                <a href="{{ route('landboard.rooms.edit-form', $room->id) }}" class="block px-2 py-1 text-sm hover:bg-gray-100"><i class="bi bi-house-gear mr-2"></i>Edit</a>
+                                <button type="button"
+                                    onclick="showDeleteModal('{{ $room->id }}')"
+                                    class="block w-full text-left px-2 py-1 text-sm hover:bg-red-100 text-red-600">
+                                    <i class="bi bi-trash mr-2"></i>Hapus
+                                </button>
+                            </div>
+                        </div>
+                        <div class="relative w-full h-36 overflow-hidden rounded-md mb-3 photo-carousel" data-room-id="{{ $room->id }}">
+                            @forelse ($room->photos as $index => $photo)
+                                <img src="{{ asset('storage/' . $photo->path) }}" class="w-full h-36 object-cover {{ $index === 0 ? 'block' : 'hidden' }} carousel-img">
+                            @empty
+                                <img src="/public/assets/room-sample.jpg" class="w-full h-36 object-cover block">
+                            @endforelse
+
+                            @if ($room->photos->count() > 1)
+                                <button class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded text-sm carousel-btn prev" data-room="{{ $room->id }}">‹</button>
+                                <button class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded text-sm carousel-btn next" data-room="{{ $room->id }}">›</button>
+                            @endif
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <h4 class="text-lg font-bold">{{ $room->room_number }}</h4>
+                            <span class="text-xs px-2 py-1 text-white rounded {{ $room->status === 'available' ? 'bg-green-500' : 'bg-red-500' }}">{{ ucfirst($room->status) }}</span>
+                        </div>
+                        <p class="text-sm font-semibold">{{ $room->type }}</p>
+                        <p class="text-sm">Rp{{ number_format($room->price, 0, ',', '.') }}</p>
+                        <p class="text-sm mb-2">Gender: {{ ucfirst($room->gender_type) }}</p>
+
+                        @php
+                            $token = $room->token()->where('used', false)->where('expires_at', '>', now())->first();
+                        @endphp
+
+                        @if ($token)
+                            <div class="text-xs mt-2 text-black">
+                                Token: <strong class="animate-pulse text-yellow-500">{{ $token->token }}</strong><br>
+                                Expire in: <span class="text-red-500" id="timer-{{ $room->id }}" data-expires="{{ $token->expires_at->toIso8601String() }}"></span>
+                            </div>
+                            <form action="{{ route('tokens.use', $room->id) }}" method="POST" class="mt-2">
+                                @csrf
+                                <input type="text" name="token" placeholder="Masukkan Token" maxlength="6" required class="w-full mt-1 px-3 py-1 border rounded text-sm">
+                                <button type="submit" class="mt-2 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-1 rounded text-sm">Gunakan Token</button>
+                            </form>
+                        @else
+                        @if ($room->status === 'available')
+                            <form action="{{ route('tokens.generate', $room->id) }}" method="POST" class="mt-2">
+                                @csrf
+                                <select name="rental_duration" required class="w-full mt-1 px-2 py-1 border rounded text-sm">
+                                    <option value="">Durasi</option>
+                                    <option value="1">1 bulan</option>
+                                    <option value="3">3 bulan</option>
+                                    <option value="6">6 bulan</option>
+                                    <option value="12">12 bulan</option>
+                                </select>
+                                <button type="submit" class="mt-2 w-full bg-[#31c594] hover:bg-[#1a966d] text-white py-1 rounded text-sm">Generate Token</button>
+                            </form>
+                        @endif
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+            <div class="mt-4 text-center">
+                <button onclick="toggleRooms()" id="toggle-btn" class="text-sm text-[#31c594] hover:underline">Tampilkan Semua</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="deleteModal" class="fixed inset-0 bg-black/50 flex items-center justify-center hidden z-50">
+    <div class="bg-white rounded-lg shadow-xl w-96 p-6">
+        <h2 class="text-lg font-bold mb-4 text-gray-800">Hapus Kamar</h2>
+        <p class="text-sm text-gray-700 mb-4">Apakah anda yakin ingin menghapus kamar ini<br>secara permanent?</p>
+        <form id="fullDeleteForm" method="POST">
+            @csrf
+            @method('DELETE')
+            <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded mb-2">
+                Ya, saya yakin
+            </button>
+        </form>
+        <button onclick="closeModal()" class="w-full bg-gray-300 hover:bg-gray-400 text-gray-800 py-2 rounded">
+            Batal
+        </button>
     </div>
 </div>
 
 <script>
-    function nextPhoto(roomId) {
-        const container = document.querySelector(`.photo-carousel[data-room-id="${roomId}"]`);
-        const images = container.querySelectorAll('.carousel-img');
-        let activeIndex = [...images].findIndex(img => img.classList.contains('active'));
-        images[activeIndex].classList.remove('active');
-        const nextIndex = (activeIndex + 1) % images.length;
-        images[nextIndex].classList.add('active');
+    document.querySelectorAll('.carousel-btn.next').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const container = btn.closest('.photo-carousel');
+            const images = container.querySelectorAll('.carousel-img');
+            let current = [...images].findIndex(img => !img.classList.contains('hidden'));
+            images[current].classList.add('hidden');
+            images[(current + 1) % images.length].classList.remove('hidden');
+        });
+    });
+
+    document.querySelectorAll('.carousel-btn.prev').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const container = btn.closest('.photo-carousel');
+            const images = container.querySelectorAll('.carousel-img');
+            let current = [...images].findIndex(img => !img.classList.contains('hidden'));
+            images[current].classList.add('hidden');
+            images[(current - 1 + images.length) % images.length].classList.remove('hidden');
+        });
+    });
+
+    function toggleRooms() {
+        const extra = document.querySelectorAll('.extra-room');
+        const btn = document.getElementById('toggle-btn');
+        const hidden = [...extra].some(el => el.classList.contains('hidden'));
+        extra.forEach(el => el.classList.toggle('hidden', !hidden));
+        btn.innerText = hidden ? 'Sembunyikan' : 'Tampilkan Semua';
     }
 
-    function prevPhoto(roomId) {
-        const container = document.querySelector(`.photo-carousel[data-room-id="${roomId}"]`);
-        const images = container.querySelectorAll('.carousel-img');
-        let activeIndex = [...images].findIndex(img => img.classList.contains('active'));
-        images[activeIndex].classList.remove('active');
-        const prevIndex = (activeIndex - 1 + images.length) % images.length;
-        images[prevIndex].classList.add('active');
-    }
+    document.querySelectorAll('.kebab-toggle').forEach(btn => {
+        btn.addEventListener('click', e => {
+            e.stopPropagation();
+            const roomId = btn.dataset.room;
+            const menu = document.querySelector(`.kebab-menu[data-room="${roomId}"]`);
+            document.querySelectorAll('.kebab-menu').forEach(m => {
+                if (m !== menu) m.classList.remove('show');
+            });
+            menu.classList.toggle('show');
+        });
+    });
 
-    document.addEventListener('DOMContentLoaded', function () {
-        document.querySelectorAll('[id^="timer-"]').forEach(function (el) {
+    document.addEventListener('click', () => {
+        document.querySelectorAll('.kebab-menu').forEach(m => m.classList.remove('show'));
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('[id^="timer-"]').forEach(el => {
             const expiresAt = new Date(el.dataset.expires).getTime();
-            const updateTimer = () => {
+            const interval = setInterval(() => {
                 const now = Date.now();
                 const distance = expiresAt - now;
                 if (distance <= 0) {
                     el.textContent = 'Expired';
                     clearInterval(interval);
                 } else {
-                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-                    el.textContent = `${minutes}m ${seconds}s`;
+                    const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((distance % (1000 * 60)) / 1000);
+                    el.textContent = `${m}m ${s}s`;
                 }
-            };
-            updateTimer();
-            const interval = setInterval(updateTimer, 1000);
+            }, 1000);
         });
     });
+    function showDeleteModal(roomId) {
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+
+        const fullDeleteForm = document.getElementById('fullDeleteForm');
+        const archiveForm = document.getElementById('archiveForm');
+
+        // Update action URL sesuai rute Laravel
+        fullDeleteForm.action = `/landboard/rooms/${roomId}`;
+        archiveForm.action = `/landboard/rooms/${roomId}/archive`;
+    }
+
+    function closeModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
 </script>
 </body>
 </html>
